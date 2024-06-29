@@ -1,0 +1,113 @@
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 2rem;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 100px;
+    .navbarMain {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+  
+    .logo{
+      display: flex;
+      top: 40px;
+      left: 40px;
+      justify-content: center;
+      .union{
+        width: 30px;
+        height: auto;
+      }
+      .lendsqr{
+        width: 120px;
+        height: 30px;
+        padding-top: 2px;
+  
+      }
+    }
+  
+    .searchBar {
+      display: flex;
+      justify-content: space-between;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      width: 400px;
+  
+      input {
+        padding: 0.5rem 1rem;
+        border: none;
+        outline: none;
+        font-size: 0.9rem;
+      }
+  
+      button {
+        background-color: #39CDCC;
+        border: none;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+  
+        .searchIcon {
+          color: #fff;
+          font-size: large;
+        }
+      }
+    }
+  
+    .navActions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+  
+      .docsLink {
+        text-decoration: underline;
+        color: #213F7D;
+        font-weight: 600;
+        padding-right: 20px;
+      }
+  
+      .notificationBtn {
+        background: none;
+        border: none;
+        cursor: pointer;
+  
+        .bellIcon {
+          font-size: 1.3rem;
+        }
+      }
+  
+      .userProfile {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+  
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+  
+        .username {
+          color: #213F7D;
+          font-weight: 600;
+        }
+  
+        .dropdownIcon {
+          padding-top: 8px;
+          font-size: 1rem;
+        }
+      }
+      .menuToggle{
+        border: none;
+        background-color: #fff;
+        font-size: 1.5rem;
+        font-weight: 800;
+        cursor: pointer;
+      }
+    }
+  }

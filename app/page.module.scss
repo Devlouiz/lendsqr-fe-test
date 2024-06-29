@@ -1,0 +1,157 @@
+//dashboard
+.sidebarMain{
+  display: flex;
+}
+.dashboard{
+  background-color: #f7f8fc;
+}
+
+//login
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem;
+  min-height: 100vh;
+}
+
+.loginPage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  //background-color: #f9fbff;
+}
+
+.loginContainer {
+  display: flex;
+  width: 85%;
+  max-width: 1200px;
+  background-color: white;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.illustration {
+  width: 50%;
+  box-shadow: inset -10px 0 15px -20px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  .logo{
+    display: flex;
+    //gap: 10px;
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    justify-content: center;
+    .union{
+      width: 20px;
+      height: auto;
+    }
+    .lendsqr{
+      width: 100px;
+      height: 20px;
+      padding-top: 2px;
+
+    }
+  }
+  
+  svg{
+    width: 80%;
+    height: auto;
+    margin: 0 auto;
+  }
+}
+
+.loginForm {
+  padding: 110px 60px;
+  width: 50%;
+
+  .logo {
+    color: #39cdcc;
+    font-size: 24px;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-style: normal;
+    font-weight: 700;
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #213F7D;
+  }
+
+  p {
+    color: #545f7d;
+    margin-bottom: 40px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #545f7d;
+    border-radius: 4px;
+  }
+
+  .passwordInput {
+    position: relative;
+
+    .showPassword {
+      position: absolute;
+      right: 10px;
+      top: 35%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #39cdcc;
+      cursor: pointer;
+    }
+  }
+
+  .forgotPassword {
+    display: block;
+    color: #39cdcc;
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+
+  .loginButton {
+    width: 100%;
+    padding: 12px;
+    background-color: #39cdcc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+}
+
+@media (max-width: 768px) {
+  .loginContainer {
+    width: 90%;
+    flex-direction: column;
+  }
+
+  .illustration {
+    display: none;
+  }
+
+  .loginForm {
+    width: 100%;
+    padding: 30px;
+  }
+}
+
+@media (max-width: 991px){
+  .sidebarMain{
+    display: block;
+  }  
+}
+
