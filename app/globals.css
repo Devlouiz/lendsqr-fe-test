@@ -13,7 +13,6 @@ body {
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
   background-color: #f7f8fc;
   
 }
@@ -23,8 +22,4 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
+

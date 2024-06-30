@@ -188,3 +188,11 @@
       }
     }
   }
+
+  @media (max-width: 425px) {
+   .title{
+    h3{
+      padding-bottom: 30px;
+    }
+   } 
+  }

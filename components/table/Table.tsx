@@ -172,6 +172,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
   if (error) return <div className={styles.error}>Error: {error}</div>;
 
   return (
+    <>
     <div className={styles.table}>
       <table className={styles.userTable}>
         <thead>
@@ -289,6 +290,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
           ))}
         </tbody>
       </table>
+    </div>
       <div className={styles.pagination}>
         <Pagination
           totalItems={filteredUsers.length}
@@ -297,7 +299,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
           onPageChange={handlePageChange}
         />
       </div>
-    </div>
+    </>
   );
 };
 
