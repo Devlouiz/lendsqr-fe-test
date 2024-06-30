@@ -6,7 +6,8 @@ import FilterModal from "../filterModal/FilterModal";
 import Pagination from "../pagination/Pagination";
 import OptionsModal from "../optionsmodal/OptionsModal";
 import { Oval } from "react-loader-spinner";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 // Define a type for a single user
 type User = {
@@ -21,36 +22,42 @@ type User = {
   };
 };
 
-
-//Fetch usersdata from mock api
-const fetchUsers = async () => {
-  const response = await fetch("https://run.mocky.io/v3/6ae8b4a3-3c8f-4d3e-801b-9e0327c87576");
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-  const data = await response.json();
-  localStorage.setItem("users", JSON.stringify(data));
-  return data;
-};
-
-
 const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
-
-  const queryClient = useQueryClient();
-
-  const { data: Users = [], isLoading, error } = useQuery<User[]>({
-    queryKey: ['users'],
-    queryFn: fetchUsers,
-  });
+  const [users, setUsers] = useState<User[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<string>("");
-  const [filteredUsers, setFilteredUsers] = useState(Users);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(15);
-  const totalItems = Users.length;
 
   const [optionsModalUser, setOptionsModalUser] = useState<string | null>(null);
+
+  //Fetch users data
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch(
+          "https://run.mocky.io/v3/6ae8b4a3-3c8f-4d3e-801b-9e0327c87576"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setUsers(data);
+        setFilteredUsers(data);
+        localStorage.setItem("users", JSON.stringify(data));
+      } catch (error) {
+        setError((error as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const indexOfLastUser = currentPage * itemsPerPage;
   const indexOfFirstUser = indexOfLastUser - itemsPerPage;
@@ -61,22 +68,18 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     setItemsPerPage(newItemsPerPage);
   };
 
-  //Toggle filtermodal function
-
+  //Toggle visibility and update state of active filter
   const toggleFilterModal = (filterType: string) => {
     if (activeFilter === filterType && isFilterModalOpen) {
-      // Close the modal if it's already open for the same filter type
       setIsFilterModalOpen(false);
       setActiveFilter("");
     } else {
-      // Open the modal with the new filter type
       setActiveFilter(filterType);
       setIsFilterModalOpen(true);
     }
   };
 
-  //Handle filter function
-
+  // Filters users based on various criteria and updates the filtered users list
   const handleFilter = (filterData: {
     organization: string;
     username: string;
@@ -85,8 +88,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     phoneNumber: string;
     status: string;
   }) => {
-    // Implemented filter logic here
-    const filtered = Users.filter((user) => {
+    const filtered = users.filter((user) => {
       return (
         (!filterData.organization ||
           user.organization.includes(filterData.organization)) &&
@@ -103,52 +105,50 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     setFilteredUsers(filtered);
     setIsFilterModalOpen(false);
     setActiveFilter("");
-    console.log("Filter applied:", filterData);
   };
 
-  //Toogle the OptionsModal for each user
-
+  // Toggles the visibility of the options modal based on the user ID
   const toggleOptionsModal = (userID: string) => {
-    if (optionsModalUser === userID) {
-      // Close the modal if it's already open for this user
-      setOptionsModalUser(null);
-    } else {
-      // Open the modal for the selected user
-      setOptionsModalUser(userID);
-    }
+    setOptionsModalUser(optionsModalUser === userID ? null : userID);
   };
 
+  // Updates the status of a user and refreshes the user list
+  const updateUserStatus = (userID: string, newStatus: string) => {
+    const updatedUsers = users.map((user) => {
+      if (`${user.username}-${user.dateJoined}` === userID) {
+        return { ...user, status: newStatus };
+      }
+      return user;
+    });
+    // Update the main users array
+    setUsers(updatedUsers);
 
+    //Toast notification
+    toast.success('User status updated!', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      });
 
-  // This mutation function updates the status of a user. It maps through the Users array,
-  // checks if the user ID matches, and updates the status if it does. The result is a promise
-  // that resolves to the updated users array. On success, it updates the 'users' query data
-  // in the query client and sets the filtered users state to reflect these changes.
-
-  const updateUserStatusMutation = useMutation({
-    mutationFn: (variables: { userID: string; newStatus: string }) => {
-      // This would typically be an API call. For now, we'll just update locally.
-      const updatedUsers = Users.map(user => {
-        if (`${user.username}-${user.dateJoined}` === variables.userID) {
-          return { ...user, status: variables.newStatus };
+    // Update the filtered users array while maintaining the current filter
+    setFilteredUsers((prevFilteredUsers) =>
+      prevFilteredUsers.map((user) => {
+        if (`${user.username}-${user.dateJoined}` === userID) {
+          return { ...user, status: newStatus };
         }
         return user;
-      });
-      return Promise.resolve(updatedUsers);
-    },
-    onSuccess: (updatedUsers) => {
-      queryClient.setQueryData(['users'], updatedUsers);
-      setFilteredUsers(updatedUsers);
-    },
-  });
-
-  const updateUserStatus = (userID: string, newStatus: string) => {
-    updateUserStatusMutation.mutate({ userID, newStatus });
+      })
+    );
   };
 
   useEffect(() => {
-    setFilteredUsers(Users);
-  }, [Users]);
+    setFilteredUsers(users);
+  }, [users]);
 
   if (isLoading)
     return (
@@ -169,8 +169,8 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
         />
       </div>
     );
-  if (error) return <div className={styles.error}>Error: {(error as Error).message}</div>;
-  
+  if (error) return <div className={styles.error}>Error: {error}</div>;
+
   return (
     <div className={styles.table}>
       <table className={styles.userTable}>

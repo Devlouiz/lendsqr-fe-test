@@ -7,4 +7,3 @@ import { redirect } from "next/navigation"
 export const Login = async () =>{
     redirect("/dashboard")
 }
-

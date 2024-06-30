@@ -2,8 +2,21 @@
 
 import { Login } from "@/lib/actions/auth";
 import styles from "./page.module.scss";
+import { useState } from "react";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    setIsLoading(true); // Set loading to true when login starts
+    try {
+      await Login(); // Call the server-side login function
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+    setIsLoading(false); // Set loading to false when login ends
+  }
   
   return (
     <>
@@ -113,7 +126,7 @@ export default function Home() {
         <div className={styles.loginForm}>
           <h2>Welcome!</h2>
           <p>Enter details to login.</p>
-          <form action={Login}>
+          <form onSubmit={handleFormSubmit}>
             <input type="email" placeholder="Email" required />
             <div className={styles.passwordInput}>
               <input type="password" placeholder="Password" required/>
@@ -124,8 +137,8 @@ export default function Home() {
             <a href="#" className={styles.forgotPassword}>
               FORGOT PASSWORD?
             </a>
-            <button type="submit" className={styles.loginButton}>
-              LOG IN
+            <button type="submit" className={styles.loginButton} disabled={isLoading}>
+              {isLoading ? 'Loading...' : 'LOG IN'}
             </button>
           </form>
         </div>

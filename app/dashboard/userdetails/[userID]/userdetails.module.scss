@@ -161,10 +161,20 @@
     }
   }
   
+  .loader{
+    width: 100dvw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   @media (max-width: 991px){
     .profileContainer{
       width: 95dvw;
       padding: 40px 10px;
+    }
+    .loader{
+      width: inherit;
     }
   }
 

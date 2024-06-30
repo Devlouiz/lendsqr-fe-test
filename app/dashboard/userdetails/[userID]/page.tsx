@@ -80,7 +80,7 @@ const UserDetails = () => {
 
   if (!userData)
     return (
-      <div style={{ width: "100%" }}>
+      <div className={styles.loader}>
         <Oval
           visible={true}
           height="130"
