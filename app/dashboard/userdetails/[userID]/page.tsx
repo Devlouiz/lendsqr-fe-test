@@ -117,7 +117,7 @@ const UserDetails = () => {
             <p>{userData.personalInfo["PHONE NUMBER"]}ghdww</p>
           </div>
           <div className={styles.tierInfo}>
-            <p>User's Tier</p>
+            <p>User&apos;s Tier</p>
             <div className={styles.stars}>⭐⭐☆</div>
           </div>
           <div className={styles.balance}>
