@@ -1,6 +1,6 @@
 .filterModalOverlay {
     position: relative;
-    width: 250px;
+    width: 300px;
   }
   
   .filterModal {
@@ -79,7 +79,7 @@
   
   @media (max-width: 768px) {
     .filterModal {
-      width: 95%;
+      width: 200px;
       padding: 15px;
     }
   }
