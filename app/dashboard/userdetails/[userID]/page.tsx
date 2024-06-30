@@ -65,8 +65,6 @@ const UserDetails = () => {
     </div>
   );
 
-  //console.log("Decoded userID:", userID);
-
   // get the storedUsers and check if user exist
   useEffect(() => {
     const storedUsers = localStorage.getItem("users");
@@ -74,7 +72,6 @@ const UserDetails = () => {
       const users = JSON.parse(storedUsers) as User[];
       const userDetail = users.find((user: User) => {
         const isMatch = `${user.username}-${user.dateJoined}` === userID;
-        //console.log(`${user.username}-${user.dateJoined}`)
         return isMatch;
       });
       setUserData(userDetail || null);
