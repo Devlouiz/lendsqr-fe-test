@@ -6,7 +6,7 @@ import FilterModal from "../filterModal/FilterModal";
 import Pagination from "../pagination/Pagination";
 import OptionsModal from "../optionsmodal/OptionsModal";
 import { Oval } from "react-loader-spinner";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 // Define a type for a single user

@@ -7,6 +7,8 @@ import { Oval } from "react-loader-spinner";
 import styles from "./userdetails.module.scss";
 import Link from "next/link";
 import { LuUser2 } from "react-icons/lu";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface User {
   personalInfo: {
@@ -97,6 +99,19 @@ const UserDetails = () => {
         />
       </div>
     );
+
+    const updateUserStatus = () =>{
+      toast.success('User status updated!', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+        });
+    }
   return (
     <div className={styles.profileContainer}>
       <div className={styles.profileHead}>
@@ -106,8 +121,8 @@ const UserDetails = () => {
         <div className={styles.title}>
           <h3>User Details</h3>
           <div>
-            <button className={styles.blacklist}>BLACKLIST USER</button>
-            <button className={styles.activate}>ACTIVATE USER</button>
+            <button className={styles.blacklist} onClick={updateUserStatus}>BLACKLIST USER</button>
+            <button className={styles.activate} onClick={updateUserStatus}>ACTIVATE USER</button>
           </div>
         </div>
         <div className={styles.header}>
