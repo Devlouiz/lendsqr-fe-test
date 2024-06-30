@@ -64,6 +64,23 @@
     }
     .logoutSection{
       border-top: 1px solid rgb(182, 181, 181);
+      .logout{
+        font-size: 1rem;
+        font-weight: 500;
+        &:hover{
+          background-color: white;
+          color: #545F7D;
+          border: none;
+        }
+      }
+      .version{
+        font-size: 0.8rem;
+        &:hover{
+          background-color: white;
+          color: #545F7D;
+          border: none;
+        }
+      }
     }
   }
   

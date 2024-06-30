@@ -6,6 +6,7 @@ import FilterModal from "../filterModal/FilterModal";
 import Pagination from "../pagination/Pagination";
 import OptionsModal from "../optionsmodal/OptionsModal";
 import { Oval } from "react-loader-spinner";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
 // Define a type for a single user
 type User = {
@@ -20,19 +21,35 @@ type User = {
   };
 };
 
-// Define the type for the props expected by UserTable
+
+//Fetch usersdata from mock api
+const fetchUsers = async () => {
+  const response = await fetch("https://run.mocky.io/v3/6ae8b4a3-3c8f-4d3e-801b-9e0327c87576");
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+  const data = await response.json();
+  localStorage.setItem("users", JSON.stringify(data));
+  return data;
+};
+
 
 const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
-  const [Users, setUsers] = useState<User[]>([]);
+
+  const queryClient = useQueryClient();
+
+  const { data: Users = [], isLoading, error } = useQuery<User[]>({
+    queryKey: ['users'],
+    queryFn: fetchUsers,
+  });
+
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("");
+  const [activeFilter, setActiveFilter] = useState<string>("");
   const [filteredUsers, setFilteredUsers] = useState(Users);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(15);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(15);
   const totalItems = Users.length;
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [optionsModalUser, setOptionsModalUser] = useState<string | null>(null);
 
   const indexOfLastUser = currentPage * itemsPerPage;
@@ -42,10 +59,9 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
   const handlePageChange = (page: number, newItemsPerPage: number) => {
     setCurrentPage(page);
     setItemsPerPage(newItemsPerPage);
-    // Here you would typically fetch new data based on the page and items per page
   };
 
-  //toggle filtermodal function
+  //Toggle filtermodal function
 
   const toggleFilterModal = (filterType: string) => {
     if (activeFilter === filterType && isFilterModalOpen) {
@@ -59,7 +75,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     }
   };
 
-  //handle filter function
+  //Handle filter function
 
   const handleFilter = (filterData: {
     organization: string;
@@ -69,7 +85,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     phoneNumber: string;
     status: string;
   }) => {
-    // Implemented your filter logic here
+    // Implemented filter logic here
     const filtered = Users.filter((user) => {
       return (
         (!filterData.organization ||
@@ -90,7 +106,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     console.log("Filter applied:", filterData);
   };
 
-  //toogle the OptionsModal for each user
+  //Toogle the OptionsModal for each user
 
   const toggleOptionsModal = (userID: string) => {
     if (optionsModalUser === userID) {
@@ -102,36 +118,39 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
     }
   };
 
-  //fetch usersdata from mock api
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://run.mocky.io/v3/6ae8b4a3-3c8f-4d3e-801b-9e0327c87576"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+
+  // This mutation function updates the status of a user. It maps through the Users array,
+  // checks if the user ID matches, and updates the status if it does. The result is a promise
+  // that resolves to the updated users array. On success, it updates the 'users' query data
+  // in the query client and sets the filtered users state to reflect these changes.
+
+  const updateUserStatusMutation = useMutation({
+    mutationFn: (variables: { userID: string; newStatus: string }) => {
+      // This would typically be an API call. For now, we'll just update locally.
+      const updatedUsers = Users.map(user => {
+        if (`${user.username}-${user.dateJoined}` === variables.userID) {
+          return { ...user, status: variables.newStatus };
         }
-        const data = await response.json();
-        setUsers(data);
-        setFilteredUsers(data);
-        setLoading(false);
-        localStorage.setItem("users", JSON.stringify(data)); // Store fetched data in local storage
-      } catch (error) {
-        setError((error as Error).message);
-        setLoading(false);
-      }
-    };
+        return user;
+      });
+      return Promise.resolve(updatedUsers);
+    },
+    onSuccess: (updatedUsers) => {
+      queryClient.setQueryData(['users'], updatedUsers);
+      setFilteredUsers(updatedUsers);
+    },
+  });
 
-    fetchData();
-  }, []);
+  const updateUserStatus = (userID: string, newStatus: string) => {
+    updateUserStatusMutation.mutate({ userID, newStatus });
+  };
 
   useEffect(() => {
     setFilteredUsers(Users);
   }, [Users]);
 
-  if (loading)
+  if (isLoading)
     return (
       <div>
         <Oval
@@ -150,7 +169,8 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
         />
       </div>
     );
-  if (error) return <div className={styles.error}>Error: {error}</div>;
+  if (error) return <div className={styles.error}>Error: {(error as Error).message}</div>;
+  
   return (
     <div className={styles.table}>
       <table className={styles.userTable}>
@@ -262,6 +282,7 @@ const Table = ({ onUserSelect }: { onUserSelect: (user: User) => void }) => {
                   onToggle={() =>
                     toggleOptionsModal(`${user.username}-${user.dateJoined}`)
                   }
+                  onStatusUpdate={updateUserStatus}
                 />
               </td>
             </tr>

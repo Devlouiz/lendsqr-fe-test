@@ -11,10 +11,16 @@ import { ImStatsBars } from "react-icons/im";
 import { MdTune } from "react-icons/md";
 import { IoIosPricetags } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 interface SidebarProps {
     isOpen: boolean;
     closeSidebar: () => void;
+}
+
+const Logout = () => {
+  redirect("/")
 }
 
 const Sidebar = ({ isOpen, closeSidebar }: SidebarProps) => {
@@ -70,8 +76,8 @@ const Sidebar = ({ isOpen, closeSidebar }: SidebarProps) => {
       </div>
       <div className={`${styles.menuSection} ${styles.logoutSection}`}>
         <ul>
-          <li><i className={`${styles.icon}`}><FiLogOut/></i><span>Login</span></li>
-          <li><span className={styles.version}>v1.2.0</span></li>
+          <li className= {styles.logout}><i className={`${styles.icon} ${styles.logout}`}><FiLogOut/></i><span><Link href={'/'}>Logout</Link></span></li>
+          <li  className={styles.version}><span>v1.2.0</span></li>
         </ul>
       </div>
     </aside>

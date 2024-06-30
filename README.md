@@ -41,6 +41,8 @@ This application is a comprehensive user management system designed for financia
 
 - **React Icons**: Utilized for adding icons across the application, enhancing the UI's aesthetic and usability.
 
+- **React Query**: Implemented React Query for efficient data fetching and mutations
+
 
 ### Setup and Installation
 
