@@ -5,7 +5,8 @@ import styles from "./page.module.scss";
 import { useState } from "react";
 
 export default function Home() {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [type, setType] = useState<string>('password');
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -18,6 +19,14 @@ export default function Home() {
     setIsLoading(false); // Set loading to false when login ends
   }
   
+
+  const handleShowPassword = () =>{
+    if (type === 'password'){
+      setType('text')
+    }else{
+      setType('password')
+    }
+  }
   return (
     <>
     <div className={styles.loginPage}>
@@ -129,8 +138,8 @@ export default function Home() {
           <form onSubmit={handleFormSubmit}>
             <input type="email" placeholder="Email" required />
             <div className={styles.passwordInput}>
-              <input type="password" placeholder="Password" required/>
-              <button type="button" className={styles.showPassword}>
+              <input type={type} placeholder="Password" required/>
+              <button type="button" className={styles.showPassword} onClick={handleShowPassword}>
                 SHOW
               </button>
             </div>
